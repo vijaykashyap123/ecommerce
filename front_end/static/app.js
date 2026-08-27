@@ -1,10 +1,6 @@
 const API_URL = "http://localhost:5000";
 
-const API_TOKEN =
-    "l9oaxyuxwEW5jJCgWa-I7_aupR0UFWPL6qcV5zmVTj8";
-
-
-
+const API_TOKEN ="new token ";
 
 
 const authHeaders = {
