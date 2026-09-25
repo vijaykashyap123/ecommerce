@@ -36,3 +36,9 @@ jobs:
 
       - name: Show connected AWS account
         run: aws sts get-caller-identity
+
+      - name: List AWS regions
+        run: aws ec2 describe-regions --query "Regions[].RegionName" --output table
+
+      - name: List S3 buckets
+        run: aws s3 ls
