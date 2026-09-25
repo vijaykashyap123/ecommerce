@@ -1,0 +1,60 @@
+name: Test AWS connection
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show safe OIDC details
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const token = await core.getIDToken('sts.amazonaws.com');
+            const claims = JSON.parse(
+              Buffer.from(token.split('.')[1], 'base64url').toString()
+            );
+            console.log({
+              sub: claims.sub,
+              aud: claims.aud,
+              repository: claims.repository,
+              ref: claims.ref,
+              event_name: claims.event_name
+            });
+
+      - name: Connect GitHub to AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Show connected AWS account
+        run: aws sts get-caller-identity
+
+      - name: List AWS regions
+        run: aws ec2 describe-regions --query "Regions[].RegionName" --output table
+
+      - name: List S3 buckets
+        run: aws s3 ls
+
+      - name: Test Terraform state bucket access
+        env:
+          BUCKET: vijay-ecommerce-tf-state-641094028852
+        run: |
+          KEY="github-actions-tests/oidc-test-${GITHUB_RUN_ID}.txt"
+
+          aws s3api head-bucket --bucket "$BUCKET"
+
+          printf 'GitHub Actions S3 write test\nRun ID: %s\n' "$GITHUB_RUN_ID" > s3-test.txt
+
+          aws s3 cp s3-test.txt "s3://$BUCKET/$KEY"
+
+          aws s3api head-object --bucket "$BUCKET" --key "$KEY"
+
+          aws s3 rm "s3://$BUCKET/$KEY"
