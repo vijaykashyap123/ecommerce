@@ -42,3 +42,19 @@ jobs:
 
       - name: List S3 buckets
         run: aws s3 ls
+
+      - name: Test Terraform state bucket access
+        env:
+          BUCKET: vijay-ecommerce-tf-state-641094028852
+        run: |
+          KEY="github-actions-tests/oidc-test-${GITHUB_RUN_ID}.txt"
+
+          aws s3api head-bucket --bucket "$BUCKET"
+
+          printf 'GitHub Actions S3 write test\nRun ID: %s\n' "$GITHUB_RUN_ID" > s3-test.txt
+
+          aws s3 cp s3-test.txt "s3://$BUCKET/$KEY"
+
+          aws s3api head-object --bucket "$BUCKET" --key "$KEY"
+
+          aws s3 rm "s3://$BUCKET/$KEY"
