@@ -25,3 +25,9 @@ instance/
 # OS
 .DS_Store
 Thumbs.db
+
+# Terraform local cache and state
+terraform/.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
