@@ -1,8 +1,10 @@
-const PRODUCT_SERVICE_URL = "http://localhost:5001";
-const ORDER_SERVICE_URL = "http://localhost:5003";
+const isLocal = window.location.hostname === "localhost";
 
-const API_TOKEN ="my-demo-token";
 
+const PRODUCT_SERVICE_URL = isLocal ? "http://localhost:5001" : "/products";
+const ORDER_SERVICE_URL = isLocal ? "http://localhost:5003" : "/orders";
+
+const API_TOKEN = "my-demo-token";
 
 const authHeaders = {
     "Authorization": `Bearer ${API_TOKEN}`,
