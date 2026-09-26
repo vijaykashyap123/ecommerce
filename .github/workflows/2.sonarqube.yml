@@ -1,0 +1,32 @@
+name: SonarQube Cloud Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  sonar-scan:
+    name: Code quality and security scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run SonarQube scan
+        uses: SonarSource/sonarqube-scan-action@v8
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=REPLACE_WITH_YOUR_PROJECT_KEY
+            -Dsonar.organization=REPLACE_WITH_YOUR_ORGANIZATION
+            -Dsonar.sources=.
+            -Dsonar.exclusions=**/node_modules/**,**/.venv/**,**/__pycache__/**,**/dist/**,**/build/**,**/.terraform/**
