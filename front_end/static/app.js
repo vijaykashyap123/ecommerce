@@ -1,9 +1,8 @@
 const isLocal = window.location.hostname === "localhost";
 
 
-const PRODUCT_SERVICE_URL = isLocal ? "http://localhost:5001" : "/products";
-const ORDER_SERVICE_URL = isLocal ? "http://localhost:5003" : "/orders";
-
+const PRODUCT_SERVICE_URL = isLocal ? "http://localhost:5001" : "";
+const ORDER_SERVICE_URL = isLocal ? "http://localhost:5003" : "";
 const API_TOKEN = "my-demo-token";
 
 const authHeaders = {
